@@ -1,0 +1,3 @@
+tira-run \
+    --input-dataset {authorship-verification-train-20240408-training} \
+    --image {nlpbuw-fsu-sose-24}
