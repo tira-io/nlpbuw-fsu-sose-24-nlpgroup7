@@ -1,6 +1,6 @@
 # Submissions of nlpgroup7
 
-This repository contains baseline submissions (document-processing, query-processing, re-ranking, and retrieval) together with a Github action and a development container configuration as starting point for submissions for the [](). 
+This repository contains baseline submissions and a template for the submission of your software to the TIRA platform. The TIRA platform is used to evaluate your software on a set of datasets. The evaluation is done in a controlled environment to ensure reproducibility and comparability of the results.
 
 We recommend that you work either in Github Codespaces or using [dev containers with Docker](https://code.visualstudio.com/docs/devcontainers/containers). Github Codespaces are an easy option to start in a few minutes (free tier of 130 compute hours per month), whereas dev container with Docker might be interesting if you want to put a bit more focus on technical/deployment details.
 
@@ -18,9 +18,9 @@ You have two options for developing your submission. Either you can develop remo
 
 ### Developing in Github Codespaces
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/webis-de/natural-language-processing-exercises)
+Click the `Code` button at the top of the repository and select `Open with Codespaces`. This will open a new Codespace with the repository loaded. You can then start developing your submission in the Codespace.
 
-Use the button above to open this repository in Github Codespaces. This will create a new Codespace for you where you can start developing your submission.
+Additional information on how to use Github Codespaces can be found [here](https://docs.github.com/en/codespaces/).
 
 ### Developing in Dev Containers
 
@@ -29,9 +29,9 @@ A dev container (please find a suitable installation instruction [here](https://
 To develop with dev containers, please:
 
 - Install [VS Code](https://code.visualstudio.com/download) and [Docker](https://docs.docker.com/engine/install/) on your machine
-- Clone this repository: `git clone ...`
 - Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) in VS Code
-- Open the directory `jupyter-notebook-submissions` with VS Code (it should ask you to open the repository in a dev container)
+- Clone this repository: `git clone ...`
+- Open the repository with VS Code (it should ask you to open the repository in a dev container)
 
 ## Submitting Your Software
 
