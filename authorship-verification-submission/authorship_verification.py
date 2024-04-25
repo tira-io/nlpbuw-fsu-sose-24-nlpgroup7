@@ -23,6 +23,8 @@ targets_train = tira.pd.truths("nlpbuw-fsu-sose-24", "authorship-verification-tr
 text_validation = tira.pd.inputs("nlpbuw-fsu-sose-24", "authorship-verification-validation-20240408-training")
 targets_validation = tira.pd.truths("nlpbuw-fsu-sose-24", "authorship-verification-validation-20240408-training")
 
+# print(text_train)
+# print(targets_train)
 
 vectorizer = TfidfVectorizer()
 
