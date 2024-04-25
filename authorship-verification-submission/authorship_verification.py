@@ -23,6 +23,7 @@ targets_train = tira.pd.truths("nlpbuw-fsu-sose-24", "authorship-verification-tr
 text_validation = tira.pd.inputs("nlpbuw-fsu-sose-24", "authorship-verification-validation-20240408-training")
 targets_validation = tira.pd.truths("nlpbuw-fsu-sose-24", "authorship-verification-validation-20240408-training")
 
+
 vectorizer = TfidfVectorizer()
 
 # Fit the vectorizer on the training data and transform the text data into TF-IDF vectors
@@ -45,6 +46,7 @@ y_pred = classifier.predict(X_validation)
 # Calculate accuracy on validation/test data
 accuracy = accuracy_score(y_validation, y_pred)
 print("Accuracy:", accuracy)
+
 
 # Write predictions to file
 predicted = [{'id': id_, 'generated': pred} for id_, pred in zip(text_validation['id'], y_pred)]
