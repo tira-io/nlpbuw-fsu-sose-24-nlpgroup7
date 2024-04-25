@@ -1,5 +1,4 @@
 import json
-from itertools import pairwise
 from pathlib import Path
 
 import pandas as pd
@@ -38,15 +37,13 @@ X = pd.DataFrame({"similarity":[],
 
 X_test_output = pd.DataFrame({"similarity":[],
                          "id":[]})
-# Y = ground_truth["same"] # uncomment to go quicker
+# Y = ground_truth["generated"] # uncomment to go quicker
 Y_train = []
 for index, text_snippets in enumerate(text_train["text"]):
     print(text_snippets)
-    # text_snippet1 = text_snippets[0]
-    # text_snippet2 = text_snippets[1]
+
     truth_class = targets_train["generated"][index]
-    # print(text_snippet1)
-    # print(text_snippet2)
+
     vectorizer1 = TfidfVectorizer()
 
     tf_idf_features1 = vectorizer1.fit_transform(text_snippets)
@@ -64,15 +61,14 @@ for index, text_snippets in enumerate(text_train["text"]):
     X = X.append(df2)
     Y_train.append(truth_class)
 
-    # print(matrix)
-    #print(similarity)
-    # print(truth_class)
-    #if index == 20:
-        #break
+    print(matrix)
+    print(similarity)
+    print(truth_class)
+    if index == 20:
+        break
 
 for index, text_snippets in enumerate(text_validation["text"]):
-    # text_snippet1 = text_snippets[0]
-    # text_snippet2 = text_snippets[1]
+
 
     vectorizer1 = TfidfVectorizer()
 
@@ -90,11 +86,8 @@ for index, text_snippets in enumerate(text_validation["text"]):
     X_test_output = X_test_output.append(df2)
 
 print(X)
-#X["similarity"]= np.array(X["similarity"]).reshape(-1, 1)
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y_train, test_size=0.30) #TODO do we have to choose similarity from dataframe?
-# Y = Y.astype('float')
-# X_train.shape
 
 
 Lr = LogisticRegression()
