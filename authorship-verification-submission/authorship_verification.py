@@ -2,9 +2,7 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
@@ -48,6 +46,12 @@ y_pred = classifier.predict(X_validation)
 accuracy = accuracy_score(y_validation, y_pred)
 print("Accuracy:", accuracy)
 
-# Write predictions to file #TODO replace this by a better method
-predicted = [{'id': id_, 'generated': str(pred)} for id_, pred in zip(text_validation['id'], y_pred)]
-# write_answers("test/", predicted)
+# Write predictions to file
+predicted = [{'id': id_, 'generated': pred} for id_, pred in zip(text_validation['id'], y_pred)]
+
+# Convert predicted list to DataFrame
+predicted_df = pd.DataFrame(predicted)
+
+# Save DataFrame to JSON file
+output_directory = get_output_directory(str(Path(__file__).parent))
+predicted_df.to_json(Path(output_directory) / "predictions.jsonl", orient="records", lines=True)
