@@ -29,8 +29,10 @@ if __name__ == "__main__":
         lang = re.split(r'[._]', jsonl_file.name)[1]
         letter_freq = dict(zip(df['letter'], df['frequency']))
         lang_freq.update({lang:letter_freq})
+    print(pd.Series(lang_freq))
+    
 
-
+    """
     print("Classification running...")
     prediction={}
     for id in tqdm(targets_validation.get("id")):
@@ -78,3 +80,4 @@ if __name__ == "__main__":
     prediction.to_json(
         Path(output_directory) / "predictions.jsonl", orient="records", lines=True
     )
+    """
