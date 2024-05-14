@@ -1,5 +1,6 @@
 from pathlib import Path
 import re
+import os
 
 from tqdm import tqdm
 import pandas as pd
@@ -23,7 +24,7 @@ if __name__ == "__main__":
     # Read the frequencies into a DataFrame
     lang_freq = {}
     output_directory = get_output_directory(Path(__file__).parent) 
-    directory_path =  str(output_directory) + "/frequencies"
+    directory_path = os.path.join(str(output_directory), "frequencies")
     print(directory_path)
     for jsonl_file in Path(directory_path).glob("frequency_*.jsonl"):
         print(jsonl_file.name)
