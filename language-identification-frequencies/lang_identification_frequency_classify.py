@@ -24,6 +24,7 @@ if __name__ == "__main__":
     lang_freq = {}
     output_directory = str(get_output_directory(Path(__file__).parent)) 
     directory_path = Path(output_directory+"/frequencies")
+    print()
     for jsonl_file in directory_path.glob("frequency_*.jsonl"):
         print(jsonl_file.name)
         df = pd.read_json(jsonl_file, orient='records', lines=True)
@@ -50,6 +51,22 @@ if __name__ == "__main__":
         for letter in letter_freq:
             letter_freq[letter]=letter_freq[letter]/len(text_array)
 
+        if lang_freq=={}:
+            print("!!! lang_freq is empty")
+            current_directory = Path('.')
+            # List all files and directories in the current directory
+            for path in current_directory.iterdir():
+                # Check if it's a file and print it
+                if path.is_file():
+                    print(f"File: {path}")
+                # Check if it's a directory and print it along with its files
+                elif path.is_dir():
+                    print(f"Directory: {path}")
+                    # List all files in this directory
+                    for file_path in path.glob('*'):
+                        if file_path.is_file():
+                            print(f" - {file_path}")
+            break
 
         # compare with trained data
         distances={}
@@ -62,10 +79,6 @@ if __name__ == "__main__":
                     dist += abs(letter_freq[letter]-lang_freq[lang][letter])
             distances.update({lang:dist})
         
-        if distances=={}:
-            print("TEXT:"+text_processed)
-            print(pd.Series(distances))
-            continue
         min_key = min(distances, key=distances.get)
         prediction.update({id:min_key})
 
