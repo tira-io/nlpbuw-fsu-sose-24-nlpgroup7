@@ -1,6 +1,5 @@
 from pathlib import Path
 import re
-import os
 
 from tqdm import tqdm
 import pandas as pd
@@ -23,10 +22,10 @@ if __name__ == "__main__":
 
     # Read the frequencies into a DataFrame
     lang_freq = {}
-    output_directory = get_output_directory(Path(__file__).parent) 
-    directory_path = os.path.join(str(output_directory), "frequencies")
-    print(directory_path)
-    for jsonl_file in Path(directory_path).glob("frequency_*.jsonl"):
+    output_directory = str(get_output_directory(Path(__file__).parent)) 
+    directory_path = Path(output_directory+"/frequencies")
+    print("directory_path"+str(directory_path))
+    for jsonl_file in directory_path.glob("frequency_*.jsonl"):
         print(jsonl_file.name)
         df = pd.read_json(jsonl_file, orient='records', lines=True)
         print(df)
@@ -72,8 +71,6 @@ if __name__ == "__main__":
         # compare with trained data
         distances={}
         for lang in lang_freq.keys():
-            if lang_freq=={}:
-                break
             dist=0
             coincidence=0
             for letter in lang_freq[lang]:
