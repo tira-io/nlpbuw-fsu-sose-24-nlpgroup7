@@ -32,7 +32,6 @@ if __name__ == "__main__":
         letter_freq = dict(zip(df['letter'], df['frequency']))
         lang_freq.update({lang:letter_freq})
 
-    
     print("Classification running...")
     prediction={}
     for id in tqdm(targets_validation.get("id")):
@@ -53,7 +52,7 @@ if __name__ == "__main__":
 
         if lang_freq=={}:
             print("!!! lang_freq is empty")
-            current_directory = Path('.')
+            current_directory = Path('./code')
             # List all files and directories in the current directory
             for path in current_directory.iterdir():
                 # Check if it's a file and print it
