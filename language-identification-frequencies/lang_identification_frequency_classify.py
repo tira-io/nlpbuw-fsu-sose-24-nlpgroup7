@@ -29,6 +29,7 @@ if __name__ == "__main__":
     for jsonl_file in Path(directory_path).glob("frequency_*.jsonl"):
         print(jsonl_file.name)
         df = pd.read_json(jsonl_file, orient='records', lines=True)
+        print(df)
         lang = re.split(r'[._]', jsonl_file.name)[1]
         letter_freq = dict(zip(df['letter'], df['frequency']))
         lang_freq.update({lang:letter_freq})
@@ -71,6 +72,8 @@ if __name__ == "__main__":
         # compare with trained data
         distances={}
         for lang in lang_freq.keys():
+            if lang_freq=={}:
+                break
             dist=0
             coincidence=0
             for letter in lang_freq[lang]:
