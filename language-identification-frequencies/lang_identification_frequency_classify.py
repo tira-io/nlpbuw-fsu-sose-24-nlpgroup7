@@ -25,14 +25,13 @@ if __name__ == "__main__":
     output_directory = str(get_output_directory(Path(__file__).parent)) 
     directory_path = Path(output_directory+"/frequencies")
     for jsonl_file in directory_path.glob("frequency_*.jsonl"):
+        print(jsonl_file.name)
         df = pd.read_json(jsonl_file, orient='records', lines=True)
         lang = re.split(r'[._]', jsonl_file.name)[1]
         letter_freq = dict(zip(df['letter'], df['frequency']))
         lang_freq.update({lang:letter_freq})
-    print(pd.Series(lang_freq))
-    
 
-    """
+    
     print("Classification running...")
     prediction={}
     for id in tqdm(targets_validation.get("id")):
@@ -80,4 +79,5 @@ if __name__ == "__main__":
     prediction.to_json(
         Path(output_directory) / "predictions.jsonl", orient="records", lines=True
     )
+    """
     """
