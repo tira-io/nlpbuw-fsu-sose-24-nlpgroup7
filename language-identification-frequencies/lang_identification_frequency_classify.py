@@ -22,8 +22,8 @@ if __name__ == "__main__":
 
     # Read the frequencies into a DataFrame
     lang_freq = {}
-    output_directory = get_output_directory(Path(__file__).parent) / "frequencies"
-    directory_path = Path(output_directory)
+    output_directory = str(get_output_directory(Path(__file__).parent)) 
+    directory_path = Path(output_directory+"/frequencies")
     for jsonl_file in directory_path.glob("frequency_*.jsonl"):
         df = pd.read_json(jsonl_file, orient='records', lines=True)
         lang = re.split(r'[._]', jsonl_file.name)[1]
