@@ -18,27 +18,8 @@ if __name__ == "__main__":
         "nlpbuw-fsu-sose-24", "language-identification-validation-20240429-training"
     )
 
-    lang_ids = [
-        "af",
-        "az",
-        "bg",
-        "cs",
-        "da",
-        "de",
-        "el",
-        "en",
-        "es",
-        "fi",
-        "fr",
-        "hr",
-        "it",
-        "ko",
-        "nl",
-        "no",
-        "pl",
-        "ru",
-        "ur",
-        "zh",
+
+    lang_ids = ["af","az","bg","cs", "da","de","el","en","es","fi","fr","hr","it","ko","nl", "no","pl","ru","ur","zh",
     ]
 
     stopwords = {
@@ -51,6 +32,13 @@ if __name__ == "__main__":
         for lang_id in lang_ids
     }
 
+    i=0
+    summa=0
+    for i in range(10000):
+        summa += len(text_validation["text"].values[i])
+    print(summa/10000)
+
+"""
     # classifying the data
     stopword_fractions = []
     for lang_id in tqdm(lang_ids):
@@ -76,5 +64,7 @@ if __name__ == "__main__":
     # saving the prediction
     output_directory = get_output_directory(str(Path(__file__).parent))
     prediction.to_json(
-        Path(output_directory) / "predictions_baseline.jsonl", orient="records", lines=True
+        Path(output_directory) / "predictions.jsonl", orient="records", lines=True
     )
+
+"""

@@ -18,28 +18,31 @@ if __name__ == "__main__":
         "nlpbuw-fsu-sose-24", "language-identification-validation-20240429-training"
     )
 
-    lang_ids = [
-        "af",
-        "az",
-        "bg",
-        "cs",
-        "da",
-        "de",
-        "el",
-        "en",
-        "es",
-        "fi",
-        "fr",
-        "hr",
-        "it",
-        "ko",
-        "nl",
-        "no",
-        "pl",
-        "ru",
-        "ur",
-        "zh",
-    ]
+
+    #print("targets_validation:")
+    #print(targets_validation.columns)
+    
+    #print(targets_validation.head())
+    #print("text_validation:")
+    #print(text_validation.columns)
+    #print(text_validation.head())
+    
+    predictions = pd.read_json(path_or_buf=Path(__file__).parent / "predictions.jsonl", lines=True) 
+    #print(predictions.query('id==14').get("lang"))
+    #print(targets_validation.query('id=="14"').get("lang"))
+
+    #print(targets_validation.query('id==14'))
+    #print(predictions.get("id"))
+    #print(predictions.query('id=={}'.format(14)).get("lang").to_string)
+    #print(targets_validation.query('id=="{}"'.format(14)).get("lang").values[0])
+    count = 0
+    for i in tqdm(predictions.get("id")):
+        if predictions.query('id=={}'.format(i)).get("lang").values[0] == targets_validation.query('id=="{}"'.format(i)).get("lang").values[0]:
+            count=count+1
+    print("Coincidence = {}".format(count))
+    print("Accurtacy = {}".format(count/len(predictions)))
+""" 
+
 
     stopwords = {
         lang_id: set(
@@ -76,5 +79,6 @@ if __name__ == "__main__":
     # saving the prediction
     output_directory = get_output_directory(str(Path(__file__).parent))
     prediction.to_json(
-        Path(output_directory) / "predictions_baseline.jsonl", orient="records", lines=True
+        Path(output_directory) / "predictions.jsonl", orient="records", lines=True
     )
+"""
