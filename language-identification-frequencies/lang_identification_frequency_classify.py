@@ -60,7 +60,9 @@ if __name__ == "__main__":
                     coincidence+=1
                     dist += abs(letter_freq[letter]-lang_freq[lang][letter])
             distances.update({lang:dist})
-
+        print(pd.Series(distances))
+        if distances=={}:
+            continue
         min_key = min(distances, key=distances.get)
         prediction.update({id:min_key})
 
