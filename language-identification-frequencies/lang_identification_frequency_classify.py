@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     # Read the frequencies into a DataFrame
     lang_freq = {}
-    output_directory = str(get_output_directory(Path(__file__).parent)) 
+    output_directory = str(Path(__file__).parent)
     directory_path = Path(output_directory+"/frequencies")
     print("directory_path"+str(directory_path))
     for jsonl_file in directory_path.glob("frequency_*.jsonl"):
