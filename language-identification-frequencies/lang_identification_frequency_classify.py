@@ -62,7 +62,7 @@ if __name__ == "__main__":
         min_key = min(distances, key=distances.get)
         prediction.update({id:min_key})
 
-    # converting the prediction to the required format
+    # converting the prediction to the required format ss
     prediction = list(prediction.items())
     prediction = pd.DataFrame(prediction)
     prediction.columns = ["id", "lang"]
