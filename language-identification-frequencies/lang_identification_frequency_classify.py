@@ -24,11 +24,8 @@ if __name__ == "__main__":
     lang_freq = {}
     output_directory = str(Path(__file__).parent)
     directory_path = Path(output_directory+"/frequencies")
-    print("directory_path"+str(directory_path))
     for jsonl_file in directory_path.glob("frequency_*.jsonl"):
-        print(jsonl_file.name)
         df = pd.read_json(jsonl_file, orient='records', lines=True)
-        print(df)
         lang = re.split(r'[._]', jsonl_file.name)[1]
         letter_freq = dict(zip(df['letter'], df['frequency']))
         lang_freq.update({lang:letter_freq})
@@ -50,23 +47,6 @@ if __name__ == "__main__":
                 letter_freq[letter] = letter_freq[letter]+1
         for letter in letter_freq:
             letter_freq[letter]=letter_freq[letter]/len(text_array)
-
-        if lang_freq=={}:
-            print("!!! lang_freq is empty")
-            current_directory = Path('./code')
-            # List all files and directories in the current directory
-            for path in current_directory.iterdir():
-                # Check if it's a file and print it
-                if path.is_file():
-                    print(f"File: {path}")
-                # Check if it's a directory and print it along with its files
-                elif path.is_dir():
-                    print(f"Directory: {path}")
-                    # List all files in this directory
-                    for file_path in path.glob('*'):
-                        if file_path.is_file():
-                            print(f" - {file_path}")
-            break
 
         # compare with trained data
         distances={}
