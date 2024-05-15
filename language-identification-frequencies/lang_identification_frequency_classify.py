@@ -39,6 +39,9 @@ if __name__ == "__main__":
         letter_freq = {}
         text_processed = text_processed.lower()
         text_processed = re.sub(r'[0-9.,!;:-=@#$%^&*()_+€/?{}"\' ]','',text_processed)
+        if (len(text_processed)) == 0:
+            continue
+
         text_array = list(text_processed)
         for letter in text_array:
             if letter not in letter_freq:
@@ -72,5 +75,3 @@ if __name__ == "__main__":
     prediction.to_json(
         Path(output_directory) / "predictions.jsonl", orient="records", lines=True
     )
-    """
-    """
