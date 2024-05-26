@@ -1,13 +1,13 @@
 from pathlib import Path
 from sklearn.metrics import accuracy_score
 from nltk.tokenize import word_tokenize
-from gensim.models import KeyedVectors
+import gensim.downloader as api
 
 from tira.rest_api_client import Client
 from tira.third_party_integrations import get_output_directory
 
 # Load the Word2Vec model
-model = KeyedVectors.load_word2vec_format('/workspaces/nlpbuw-fsu-sose-24-nlpgroup7/paraphrase-identification-submission/GoogleNews-vectors-negative300.bin.gz', binary=True, limit=1000000)
+model = api.load('word2vec-google-news-300')
 print("Model loaded")
 
 # Load the data
