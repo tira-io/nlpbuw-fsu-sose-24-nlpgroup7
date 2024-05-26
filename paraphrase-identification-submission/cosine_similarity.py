@@ -64,7 +64,7 @@ for threshold in sorted(text["similarity"].unique()):
 best_threshold = max(mccs, key=mccs.get)
 print(f"Best threshold: {best_threshold}")
 
-# use the threshold to classify
+# use the threshold to classify examples
 text['label'] = (text['similarity'] >= best_threshold).astype(int)
 text = text.drop(columns=['similarity', 'sentence1', 'sentence2']).reset_index()
 
