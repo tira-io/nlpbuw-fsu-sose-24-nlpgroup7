@@ -1,13 +1,14 @@
 from pathlib import Path
 from sklearn.metrics import accuracy_score
-import gensim.downloader as api
 from nltk.tokenize import word_tokenize
+from gensim.models import KeyedVectors
 
 from tira.rest_api_client import Client
 from tira.third_party_integrations import get_output_directory
 
-# load the model for Word Mover Distance calculation
-model = api.load('word2vec-google-news-300')
+# Load the Word2Vec model
+model = KeyedVectors.load_word2vec_format('/workspaces/nlpbuw-fsu-sose-24-nlpgroup7/paraphrase-identification-submission/GoogleNews-vectors-negative300.bin.gz', binary=True, limit=1000000)
+print("Model loaded")
 
 # Load the data
 tira = Client()
@@ -22,12 +23,12 @@ def preprocess(sentence):
     return [word.lower() for word in word_tokenize(sentence)]
 
 def calculate_wmd(sentence1, sentence2):
-    word_vectors1 = preprocess(sentence1)
-    word_vectors2 = preprocess(sentence2)
-    distance = model.wmdistance(word_vectors1, word_vectors2)
+    tokens1 = preprocess(sentence1)
+    tokens2 = preprocess(sentence2)
+    distance = model.wmdistance(tokens1, tokens2)
     return distance
 
-# calculate cosine similarity for all pairs of sentences
+# calculate Word Mover Distance for all pairs of sentences
 distances = text.apply(lambda x: calculate_wmd(x['sentence1'], x['sentence2']), axis=1)
 
 # add similarity property to data
