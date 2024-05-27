@@ -48,7 +48,7 @@ similarities = df.apply(lambda x: calculate_cosine_similarity(x['sentence1'], x[
 # add similarity property to data
 df['similarity'] = similarities
 
-df["label"] = (df["similarity"] > 0.9306460618972778).astype(int)
+df["label"] = (df["similarity"] > 0.9).astype(int)
 df = df.drop(columns=["similarity", "sentence1", "sentence2"]).reset_index()
 
 # accuracy = accuracy_score(labels['label'], df['label'])
