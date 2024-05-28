@@ -1,5 +1,4 @@
 from pathlib import Path
-import spacy
 import pandas as pd
 from joblib import load
 from cosineSimilarity import calculate_cosine_similarity
@@ -8,8 +7,6 @@ from tira.rest_api_client import Client
 from tira.third_party_integrations import get_output_directory
 
 if __name__ == "__main__":
-    
-    nlp = spacy.load('en_core_web_md')
 
     # Load the data
     tira = Client()
@@ -35,22 +32,3 @@ if __name__ == "__main__":
     output_directory = get_output_directory(str(Path(__file__).parent))
     # Save DataFrame to JSON file
     predicted_df.to_json(Path(output_directory) / "predictions.jsonl", orient="records", lines=True)
-
-
-    # df = text.join(labels)
-    # # calculate the Mattews Correlation
-    # mccs = {}
-    # for threshold in sorted(text["similarity"].unique()):
-    #     tp = df[(df["similarity"] >= threshold) & (df["label"] == 1)].shape[0]
-    #     fp = df[(df["similarity"] >= threshold) & (df["label"] == 0)].shape[0]
-    #     tn = df[(df["similarity"] < threshold) & (df["label"] == 0)].shape[0]
-    #     fn = df[(df["similarity"] < threshold) & (df["label"] == 1)].shape[0]
-    #     try:
-    #         mcc = (tp * tn - fp * fn) / (
-    #             (tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)
-    #         ) ** 0.5
-    #     except ZeroDivisionError:
-    #         mcc = 0
-    #     mccs[threshold] = mcc
-    # best_threshold = max(mccs, key=mccs.get)
-    # print(f"Best threshold: {best_threshold}")

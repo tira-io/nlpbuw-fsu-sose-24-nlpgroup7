@@ -5,13 +5,10 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
 from sklearn.pipeline import Pipeline
 from joblib import dump
-import spacy
 from cosineSimilarity import calculate_cosine_similarity
 
 from tira.rest_api_client import Client
 from tira.third_party_integrations import get_output_directory
-
-nlp = spacy.load('en_core_web_md')
 
 # Load the data
 tira = Client()
