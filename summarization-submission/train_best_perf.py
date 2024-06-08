@@ -79,10 +79,17 @@ training_args = Seq2SeqTrainingArguments(
 # Define the metric computation
 def compute_metrics(eval_pred):
     predictions, labels = eval_pred
+    
+    # Decode predictions
     decoded_preds = tokenizer.batch_decode(predictions, skip_special_tokens=True)
-    labels = [[label] for label in labels]
+    
+    # Flatten labels
+    if isinstance(labels[0], list):  # Check if labels are nested
+        labels = [label for sublist in labels for label in sublist]
+    
+    # Decode labels
     decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
-
+    
     # Use ROUGE score for evaluation
     from datasets import load_metric
     rouge = load_metric("rouge")
@@ -91,6 +98,7 @@ def compute_metrics(eval_pred):
     # Extract the f1 score of the ROUGE metric
     result = {key: value.mid.fmeasure * 100 for key, value in result.items()}
     return result
+
 
 # Trainer
 trainer = Seq2SeqTrainer(
