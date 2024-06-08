@@ -1,5 +1,5 @@
 import pandas as pd
-from transformers import T5ForConditionalGeneration, T5Tokenizer, Trainer, TrainingArguments
+from transformers import T5ForConditionalGeneration, T5Tokenizer, Trainer, TrainingArguments, Seq2SeqTrainer, Seq2SeqTrainingArguments
 from datasets import Dataset, DatasetDict
 import torch
 from tira.rest_api_client import Client
@@ -58,7 +58,7 @@ def preprocess_function(examples):
 tokenized_datasets = dataset.map(preprocess_function, batched=True)
 
 # Training arguments
-training_args = TrainingArguments(
+training_args = Seq2SeqTrainingArguments(
     output_dir="./results",
     evaluation_strategy="epoch",
     learning_rate=2e-5,
@@ -68,15 +68,33 @@ training_args = TrainingArguments(
     save_total_limit=1,
     num_train_epochs=3,
     predict_with_generate=True,
+    logging_dir="./logs",
+    logging_steps=10,
 )
 
+# Define the metric computation
+def compute_metrics(eval_pred):
+    predictions, labels = eval_pred
+    decoded_preds = tokenizer.batch_decode(predictions, skip_special_tokens=True)
+    decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+
+    # Use ROUGE score for evaluation
+    from datasets import load_metric
+    rouge = load_metric("rouge")
+    result = rouge.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
+
+    # Extract the f1 score of the ROUGE metric
+    result = {key: value.mid.fmeasure * 100 for key, value in result.items()}
+    return result
+
 # Trainer
-trainer = Trainer(
+trainer = Seq2SeqTrainer(
     model=model,
     args=training_args,
     train_dataset=tokenized_datasets["train"],
     eval_dataset=tokenized_datasets["validation"],
     tokenizer=tokenizer,
+    compute_metrics=compute_metrics,
 )
 
 # Train the model
