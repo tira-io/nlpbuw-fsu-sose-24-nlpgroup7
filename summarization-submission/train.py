@@ -39,7 +39,7 @@ dataset = DatasetDict({
 })
 
 # Tokenizer and model initialization
-model_name = "t5-base"
+model_name = "t5-small"  # Use a smaller model to reduce memory usage
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 model = T5ForConditionalGeneration.from_pretrained(model_name)
 
@@ -60,16 +60,17 @@ tokenized_datasets = dataset.map(preprocess_function, batched=True, remove_colum
 # Training arguments
 training_args = Seq2SeqTrainingArguments(
     output_dir="./results",
-    evaluation_strategy="epoch",
+    eval_strategy="epoch",
     learning_rate=2e-5,
-    per_device_train_batch_size=4,
-    per_device_eval_batch_size=4,
+    per_device_train_batch_size=1,  # Further reduced batch size
+    per_device_eval_batch_size=1,   # Further reduced batch size
     weight_decay=0.01,
     save_total_limit=1,
     num_train_epochs=3,
     predict_with_generate=True,
     logging_dir="./logs",
     logging_steps=10,
+    fp16=True,  # Mixed precision training
 )
 
 # Define the metric computation
