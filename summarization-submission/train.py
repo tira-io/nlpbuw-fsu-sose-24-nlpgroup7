@@ -1,5 +1,5 @@
 import pandas as pd
-from transformers import T5ForConditionalGeneration, T5Tokenizer, Trainer, TrainingArguments, Seq2SeqTrainer, Seq2SeqTrainingArguments
+from transformers import T5ForConditionalGeneration, T5Tokenizer, Seq2SeqTrainer, Seq2SeqTrainingArguments
 from datasets import Dataset, DatasetDict
 import torch
 from tira.rest_api_client import Client
@@ -46,16 +46,16 @@ model = T5ForConditionalGeneration.from_pretrained(model_name)
 # Tokenize the data
 def preprocess_function(examples):
     inputs = [doc for doc in examples["input_text"]]
-    model_inputs = tokenizer(inputs, max_length=512, truncation=True)
+    model_inputs = tokenizer(inputs, max_length=512, truncation=True, padding="max_length")
     
     # Setup the tokenizer for targets
     with tokenizer.as_target_tokenizer():
-        labels = tokenizer(examples["summary"], max_length=150, truncation=True)
+        labels = tokenizer(examples["summary"], max_length=150, truncation=True, padding="max_length")
     
     model_inputs["labels"] = labels["input_ids"]
     return model_inputs
 
-tokenized_datasets = dataset.map(preprocess_function, batched=True)
+tokenized_datasets = dataset.map(preprocess_function, batched=True, remove_columns=["input_text", "summary"])
 
 # Training arguments
 training_args = Seq2SeqTrainingArguments(
@@ -76,6 +76,7 @@ training_args = Seq2SeqTrainingArguments(
 def compute_metrics(eval_pred):
     predictions, labels = eval_pred
     decoded_preds = tokenizer.batch_decode(predictions, skip_special_tokens=True)
+    labels = [[label] for label in labels]
     decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
 
     # Use ROUGE score for evaluation
