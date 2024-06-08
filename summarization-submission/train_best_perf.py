@@ -1,9 +1,8 @@
 import pandas as pd
+import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer, Seq2SeqTrainer, Seq2SeqTrainingArguments
 from datasets import Dataset, DatasetDict
-import torch
 from tira.rest_api_client import Client
-from tira.third_party_integrations import get_output_directory
 
 # Load the data
 tira = Client()
@@ -39,7 +38,7 @@ dataset = DatasetDict({
 })
 
 # Tokenizer and model initialization
-model_name = "t5-small"  # Use a smaller model to reduce memory usage
+model_name = "t5-small"
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 model = T5ForConditionalGeneration.from_pretrained(model_name)
 
@@ -59,22 +58,22 @@ tokenized_datasets = dataset.map(preprocess_function, batched=True, remove_colum
 
 # Training arguments
 training_args = Seq2SeqTrainingArguments(
-    output_dir="./results",
-    save_strategy="steps",
-    metric_for_best_model="rouge1",
-    greater_is_better=True,
+    output_dir="./results_best_perf",
     eval_strategy="epoch",
     learning_rate=2e-5,
-    per_device_train_batch_size=1,  # Further reduced batch size
-    per_device_eval_batch_size=1,   # Further reduced batch size
+    per_device_train_batch_size=2,
+    per_device_eval_batch_size=2,
     weight_decay=0.01,
     save_total_limit=1,
-    num_train_epochs=3,
+    num_train_epochs=2,
     predict_with_generate=True,
     logging_dir="./logs",
     logging_steps=10,
     fp16=True,  # Mixed precision training
-    device="cuda",  # Utilize CUDA for training
+    save_steps=500,  # Save the model every 500 steps
+    save_strategy="steps",  # Save based on steps
+    metric_for_best_model="rouge1",  # Use ROUGE1 to determine the best model
+    greater_is_better=True,  # Higher ROUGE1 score is better
 )
 
 # Define the metric computation
