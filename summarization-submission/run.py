@@ -18,7 +18,7 @@ if __name__ == "__main__":
     ).set_index("id")
 
     # Load the fine-tuned model and tokenizer
-    model_path = "./trained_model"
+    model_path = "/code/trained_model"
     tokenizer = T5Tokenizer.from_pretrained(model_path)
     model = T5ForConditionalGeneration.from_pretrained(model_path)
 
