@@ -70,6 +70,7 @@ training_args = Seq2SeqTrainingArguments(
     predict_with_generate=True,
     logging_dir="./logs",
     logging_steps=10,
+    save_steps=500,  # Save the model every 500 steps
 )
 
 # Define the metric computation
