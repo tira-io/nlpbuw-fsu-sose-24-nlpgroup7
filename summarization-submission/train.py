@@ -39,7 +39,7 @@ dataset = DatasetDict({
 })
 
 # Tokenizer and model initialization
-model_name = "t5-small"  # Use a smaller model to reduce memory usage
+model_name = "t5-base"
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 model = T5ForConditionalGeneration.from_pretrained(model_name)
 
@@ -59,18 +59,17 @@ tokenized_datasets = dataset.map(preprocess_function, batched=True, remove_colum
 
 # Training arguments
 training_args = Seq2SeqTrainingArguments(
-    output_dir="./results",
+    output_dir="./results_bigger_model/",
     eval_strategy="epoch",
     learning_rate=2e-5,
-    per_device_train_batch_size=1,  # Further reduced batch size
-    per_device_eval_batch_size=1,   # Further reduced batch size
+    per_device_train_batch_size=2,  # Further reduced batch size
+    per_device_eval_batch_size=2,   # Further reduced batch size
     weight_decay=0.01,
     save_total_limit=1,
-    num_train_epochs=3,
+    num_train_epochs=2,
     predict_with_generate=True,
     logging_dir="./logs",
     logging_steps=10,
-    fp16=True,  # Mixed precision training
 )
 
 # Define the metric computation
@@ -110,6 +109,15 @@ trainer = Seq2SeqTrainer(
 # Train the model
 trainer.train()
 
+# Evaluate the model on the validation set
+eval_results = trainer.evaluate()
+print(f"Evaluation results: {eval_results}")
+
 # Save the model
-model.save_pretrained("./trained_model")
-tokenizer.save_pretrained("./trained_model")
+model.save_pretrained("./results_bigger_model/trained_model")
+tokenizer.save_pretrained("./results_bigger_model/trained_model")
+
+# Log final evaluation results
+with open("./results_bigger_model/metrics_log.txt", "a") as writer:
+    writer.write(f"Final Evaluation results: {eval_results}\n")
+
