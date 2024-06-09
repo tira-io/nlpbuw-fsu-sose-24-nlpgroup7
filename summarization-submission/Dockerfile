@@ -16,7 +16,9 @@ RUN chmod +x /code/download_and_unzip.sh
 # Run the download and unzip script
 RUN /code/download_and_unzip.sh
 
+# Add requirements.txt
+ADD requirements.txt /code/requirements.txt
 # Install Python dependencies
-RUN pip install -r requirements.txt
+RUN pip install -r /code/requirements.txt
 
 ENTRYPOINT [ "python3", "/code/run.py" ]
