@@ -7,7 +7,7 @@ RUN pip install gdown
 RUN apt-get update && apt-get install -y unzip
 
 # Add the run.py script to the container
-ADD run.py /code/run.py
+ADD run_cuda.py /code/run.py
 
 # Add the script to download and unzip the model from Google Drive
 ADD download_and_unzip.sh /code/download_and_unzip.sh
