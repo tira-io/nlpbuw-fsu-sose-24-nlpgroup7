@@ -3,16 +3,17 @@ on:
   workflow_dispatch:
     inputs:
       dockerpath:
-        description: The path to the directory of your submission. Should contain a Dockerfile that executes your code.
+        description: The path to the directory where the Docker image should be build. Should contain a Dockerfile that specifies everything.
         required: true
       dataset:
         type: choice
-        description: Dataset
+        description: Dataset.
         options:
         - authorship-verification-validation-20240408-training
         - language-identification-validation-20240429-training
         - paraphrase-identification-validation-20240515-training
         - summarization-validation-20240530-training
+        - ner-validation-20240612-training
 
 jobs:
   docker-build:
@@ -49,7 +50,7 @@ jobs:
         name: Set environment variables
         env:
           TIRA_TASK_ID: nlpbuw-fsu-sose-24
-          TIRA_VM_ID: nlpgroup7
+          TIRA_VM_ID: baseline
         run: |
           tira-run --export-submission-environment \
           	GITHUB_SHA=${{ github.sha }} \
