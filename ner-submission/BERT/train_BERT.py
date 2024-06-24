@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from datasets import Dataset
 from tira.rest_api_client import Client
-from transformers import BertTokenizer, BertForTokenClassification, Trainer, TrainingArguments, DataCollatorForTokenClassification
+from transformers import BertTokenizerFast, BertForTokenClassification, Trainer, TrainingArguments, DataCollatorForTokenClassification
 
 def load_data(text_data, label_data):
     texts = text_data.to_dict(orient='records')
@@ -14,7 +14,7 @@ def load_data(text_data, label_data):
         data.append({
             'id': text['id'],
             'sentence': text['sentence'].split(),
-            'labels': [label['tags']]
+            'labels': label['tags']
         })
     return data
 
@@ -40,21 +40,26 @@ def tokenize_and_align_labels(examples, label_all_tokens=True):
 if __name__ == "__main__":
     tira = Client()
 
-    text_train = tira.pd.inputs("nlpbuw-fsu-sose-24", "ner-train-20240612-training")
-    targets_train = tira.pd.truths("nlpbuw-fsu-sose-24", "ner-train-20240612-training")
+    # Load training and validation data
+    # text_train = tira.pd.inputs("nlpbuw-fsu-sose-24", "ner-train-20240612-training")
+    # targets_train = tira.pd.truths("nlpbuw-fsu-sose-24", "ner-train-20240612-training")
     text_validation = tira.pd.inputs("nlpbuw-fsu-sose-24", "ner-validation-20240612-training")
     targets_validation = tira.pd.truths("nlpbuw-fsu-sose-24", "ner-validation-20240612-training")
 
-    train_data = load_data(text_train, targets_train)
+    # Process data
+    # train_data = load_data(text_train, targets_train)
     val_data = load_data(text_validation, targets_validation)
 
+    # Load pre-trained model and tokenizer
     model_name = "bert-base-cased"
-    tokenizer = BertTokenizer.from_pretrained(model_name)
+    tokenizer = BertTokenizerFast.from_pretrained(model_name)
     model = BertForTokenClassification.from_pretrained(model_name, num_labels=9)  # Adjust num_labels as needed
 
-    train_dataset = Dataset.from_pandas(pd.DataFrame(train_data)).map(tokenize_and_align_labels, batched=True)
+    # Create datasets
+    # train_dataset = Dataset.from_pandas(pd.DataFrame(train_data)).map(tokenize_and_align_labels, batched=True)
     val_dataset = Dataset.from_pandas(pd.DataFrame(val_data)).map(tokenize_and_align_labels, batched=True)
 
+    # Set up training arguments
     training_args = TrainingArguments(
         output_dir='./results',
         evaluation_strategy="epoch",
@@ -65,11 +70,12 @@ if __name__ == "__main__":
         weight_decay=0.01,
     )
 
+    # Initialize Trainer
     data_collator = DataCollatorForTokenClassification(tokenizer)
     trainer = Trainer(
         model=model,
         args=training_args,
-        train_dataset=train_dataset,
+        train_dataset=val_dataset,
         eval_dataset=val_dataset,
         data_collator=data_collator,
         tokenizer=tokenizer,
@@ -78,5 +84,6 @@ if __name__ == "__main__":
     # Train the model
     trainer.train()
 
+    # Save the model
     trainer.save_model('./saved_model')
     tokenizer.save_pretrained('./saved_model')
