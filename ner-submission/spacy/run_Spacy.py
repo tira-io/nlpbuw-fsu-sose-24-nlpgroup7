@@ -7,7 +7,6 @@ from tira.rest_api_client import Client
 
 tira = Client()
 
-
 # Function to load JSONL data
 def load_jsonl(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -33,12 +32,13 @@ def preprocess_data(data):
         tags = row['tags']
         entities = []
         words = sentence.split(' ')
+        start_char = 0
         for i, word in enumerate(words):
             if tags[i] != 'O':
                 tag, entity = tags[i].split('-')
-                start_char = sentence.find(word)
                 end_char = start_char + len(word)
                 entities.append((start_char, end_char, entity))
+            start_char += len(word) + 1  # +1 to account for the space
         formatted_data.append((sentence, {'entities': entities}))
     return formatted_data
 
@@ -100,7 +100,7 @@ def make_predictions(nlp, data):
         predictions.append({'id': row['id'], 'tags': tags})
     return predictions
 
-test_predictions = make_predictions(nlp, test_text)
+test_predictions = make_predictions(nlp, valid_text)
 
 # Save predictions to predictions.jsonl
 with open('predictions.jsonl', 'w', encoding='utf-8') as f:
