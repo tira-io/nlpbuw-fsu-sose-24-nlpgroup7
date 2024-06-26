@@ -1,0 +1,7 @@
+transformers
+datasets
+torch
+SentencePiece
+transformers[torch]
+absl-py
+rouge_score
