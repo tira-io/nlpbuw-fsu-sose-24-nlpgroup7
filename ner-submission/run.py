@@ -10,14 +10,12 @@ from spacy.tokens import Doc
 def predict(texts, vocab):
     predictions = []
     for id_, text in zip(texts.index, texts):
-        words = re.findall(r'\S+|\u0085|\u0094', text)
-        doc = Doc(vocab, words)
-        # print(doc)
-        tags = ["O"] * len(doc)
-        doc = nlp(doc)
-        # print(doc.ents)
+        words = re.findall(r'\S+|\u0085|\u0094', text) # split words and include special operators
+        doc_ = Doc(vocab, words) # build doc for the purpose of correct number of tokens for initialization of "tags"
+        tags = ["O"] * len(doc_)
+        doc = nlp(doc_) # classify entities based on the tokenized input
         for ent in doc.ents:
-            # print(ent.start)
+            # write output according to the IOB standard
             tags[ent.start] = f"B-{ent.label_}"
             for i in range(ent.start + 1, ent.end):
                 tags[i] = f"I-{ent.label_}"
@@ -44,16 +42,18 @@ if __name__ == "__main__":
     
     predictions_df = pd.DataFrame(predictions)
     
-    for i in range(len(targets_validation['tags'])):
-        if len(targets_validation['tags'][i]) != len(predictions_df['tags'][i]):
-            print(f"Inconsistent lengths at index {i}: "
-                f"targets length: {len(targets_validation['tags'][i])}, "
-                f"predictions length: {len(predictions_df['tags'][i])}")
+    
+    # # Check if the sizes of prediction labels and true labels match
+    # for i in range(len(targets_validation['tags'])):
+    #     if len(targets_validation['tags'][i]) != len(predictions_df['tags'][i]):
+    #         print(f"Inconsistent lengths at index {i}: "
+    #             f"targets length: {len(targets_validation['tags'][i])}, "
+    #             f"predictions length: {len(predictions_df['tags'][i])}")
         
-    print(classification_report(targets_validation['tags'], predictions_df['tags'], zero_division=0))
+    # print(classification_report(targets_validation['tags'], predictions_df['tags'], zero_division=0))
 
     # saving the prediction
     output_directory = get_output_directory(str(Path(__file__).parent))
-    text_validation.to_json(
-        Path(output_directory) / "sentences.jsonl", orient="records", lines=True
+    predictions_df.to_json(
+        Path(output_directory) / "predictions.jsonl", orient="records", lines=True
     )

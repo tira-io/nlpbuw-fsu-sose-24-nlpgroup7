@@ -16,6 +16,7 @@ def preprocess_data(texts, labels):
     else:
         ner = nlp.get_pipe("ner")
 
+    # build training data
     training_data = []
     for _, text_row in texts.iterrows():
         text_id = text_row['id']
@@ -28,7 +29,7 @@ def preprocess_data(texts, labels):
                 "sentence": text_sentence,
                 "tags": tags
             })           
-                
+                      
     # add labels to pipeline
     for item in training_data:
         tags = item['tags']
@@ -37,6 +38,7 @@ def preprocess_data(texts, labels):
                 ner.add_label(tag.split("-")[1])
     return training_data
 
+# determine the character index in a sentence
 def char_index(sentence, word_index):
     sentence = re.split('(\s)',sentence) # parentheses keep split characters
     return len(''.join(sentence[:word_index*2]))
@@ -57,26 +59,32 @@ def train(training_data, n_iter):
                     entities = []
                     entity_start = None
                     entity_type = None
+                    # convert tagged entities to ranges suitable for training
                     for i, tag in enumerate(tags):
                         if tag.startswith("B-"):
+                            # beginning of entity
                             if entity_start is not None:
+                                # if there is one-token entity, add it, and initialize the new one
                                 entities.append((entity_start, entity_end, entity_type))
                             entity_start = char_index(text, i)
                             entity_end = entity_start + len(text.split()[i])
                             entity_type = tag.split("-")[1]
                         elif tag.startswith("I-") and entity_type:
+                            # continue if inside an entity
                             continue
                         else:
+                            # if "O" tag is encountered
                             if entity_start is not None:
                                 entity_end = char_index(text, i-1) + len(text.split()[i-1])
                                 entities.append((entity_start, entity_end, entity_type))
                                 entity_start = None
                                 entity_type = None
-
+                    # for any remaining entities...
                     if entity_start is not None:
                         entities.append((entity_start, entity_start + len(text.split()[len(tags)-1]), entity_type))
                     
                 example = Example.from_dict(doc, {"entities": entities})
+                # begin training
                 nlp.update(
                     [example],
                     drop=0.2,
@@ -85,15 +93,13 @@ def train(training_data, n_iter):
             print(losses)
                 
 def save_model(output_dir=None):
-# save trained model
+    # save trained model
     if output_dir is not None:
         output_dir = Path(output_dir)
     if not output_dir.exists():
         output_dir.mkdir()
     nlp.to_disk(output_dir)
     print("Saved model to", output_dir)
-    
-    
     
 def print_training_data_sample(training_data, num_samples=5):
     for i, data in enumerate(training_data[:num_samples]):
@@ -115,11 +121,14 @@ if __name__ == "__main__":
         "nlpbuw-fsu-sose-24", "ner-training-20240612-training"
     )
     
-    output_directory = get_output_directory(str(Path(__file__).parent) + "/model_new")
+    output_directory = get_output_directory(str(Path(__file__).parent) + "/model")
 
+    # preprocess data
     training_data = preprocess_data(text_train, targets_train)
     # print_training_data_sample(training_data)
     
+    # train the model
     train(training_data, 30)
     
+    # save the model
     save_model(output_dir=output_directory)
