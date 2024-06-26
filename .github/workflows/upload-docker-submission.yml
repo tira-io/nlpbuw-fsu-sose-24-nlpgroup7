@@ -50,7 +50,7 @@ jobs:
         name: Set environment variables
         env:
           TIRA_TASK_ID: nlpbuw-fsu-sose-24
-          TIRA_VM_ID: baseline
+          TIRA_VM_ID: nlpgroup7
         run: |
           tira-run --export-submission-environment \
           	GITHUB_SHA=${{ github.sha }} \
