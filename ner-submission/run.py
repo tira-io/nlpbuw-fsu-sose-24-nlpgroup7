@@ -32,9 +32,9 @@ if __name__ == "__main__":
         "nlpbuw-fsu-sose-24", "ner-validation-20240612-training"
     ).set_index("id")
     
-    targets_validation = tira.pd.truths(
-        "nlpbuw-fsu-sose-24", "ner-validation-20240612-training"
-    )
+    # targets_validation = tira.pd.truths(
+    #     "nlpbuw-fsu-sose-24", "ner-validation-20240612-training"
+    # )
 
     nlp = spacy.load(str(Path(__file__).parent)+"/model")
     
