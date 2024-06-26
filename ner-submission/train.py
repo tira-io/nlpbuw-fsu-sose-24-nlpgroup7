@@ -38,7 +38,7 @@ def preprocess_data(texts, labels):
     return training_data
 
 def char_index(sentence, word_index):
-    sentence = re.split('(\s)',sentence) #Parentheses keep split characters
+    sentence = re.split('(\s)',sentence) # parentheses keep split characters
     return len(''.join(sentence[:word_index*2]))
 
 def train(training_data, n_iter): 
@@ -77,8 +77,6 @@ def train(training_data, n_iter):
                         entities.append((entity_start, entity_start + len(text.split()[len(tags)-1]), entity_type))
                     
                 example = Example.from_dict(doc, {"entities": entities})
-                # print(example)
-                # begin training
                 nlp.update(
                     [example],
                     drop=0.2,
@@ -117,23 +115,11 @@ if __name__ == "__main__":
         "nlpbuw-fsu-sose-24", "ner-training-20240612-training"
     )
     
-    # from spacy.training import offsets_to_biluo_tags
-
-    # text = "Belarus ’s Foreign Ministry has dismissed the latest U.S.-imposed sanctions aimed at freezing the U.S. assets of Belarusian President Alexander Lukashenko and other government officials ."
-    # entities = [(0, 27, 'ORG')]
-
-    # # Convert offsets to BILOU tags
-    # doc = nlp(text)
-    # biluo_tags = offsets_to_biluo_tags(doc, entities)
-    # print(biluo_tags)
-    # print(doc.ents)
-  
-        
-    output_directory = get_output_directory(str(Path(__file__).parent) + "/model")
+    output_directory = get_output_directory(str(Path(__file__).parent) + "/model_new")
 
     training_data = preprocess_data(text_train, targets_train)
     # print_training_data_sample(training_data)
     
-    train(training_data, 10)
+    train(training_data, 30)
     
     save_model(output_dir=output_directory)
